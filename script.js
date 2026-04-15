@@ -4,14 +4,14 @@ let regionData = {};
 // Initialize Supabase Client
 const SUPABASE_URL = "https://btbomnsmjzqcthdogmtp.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Ym9tbnNtanpxY3RoZG9nbXRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyNjA0NzksImV4cCI6MjA5MTgzNjQ3OX0.Mf2R8F_IbOqP-cDhlKOrra_JzHlBUgjYHHdCd8t4gac";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Active Donors State
 let donorsData = [];
 
 // Fetch Regions from Database
 async function fetchRegions() {
-  const { data, error } = await supabase.from('regions').select('*');
+  const { data, error } = await supabaseClient.from('regions').select('*');
   if (error) {
     console.error("Error fetching regions:", error);
     return;
@@ -25,7 +25,7 @@ async function fetchRegions() {
 
 // Fetch Donors from Database
 async function fetchDonors() {
-  const { data, error } = await supabase.from('donors').select('*');
+  const { data, error } = await supabaseClient.from('donors').select('*');
   if (error) {
     console.error("Error fetching donors:", error);
     return;
@@ -281,7 +281,7 @@ addDonorForm.addEventListener("submit", async (e) => {
     last_donated: currentMonthYear
   };
   
-  const { error } = await supabase.from('donors').insert([dbDonor]);
+  const { error } = await supabaseClient.from('donors').insert([dbDonor]);
   
   if(error) {
     console.error("Error inserting donor:", error);
@@ -330,7 +330,7 @@ function renderAdminDonors() {
 // Delete Donor Function
 window.deleteDonor = async function(id) {
   if (confirm("Are you sure you want to remove this donor?")) {
-    const { error } = await supabase.from('donors').delete().eq('id', id);
+    const { error } = await supabaseClient.from('donors').delete().eq('id', id);
     if(error) {
       console.error("Error deleting donor:", error);
       alert("Could not delete donor from database.");
@@ -458,7 +458,7 @@ pubRegisterForm.addEventListener("submit", async (e) => {
     last_donated: currentMonthYear
   };
   
-  const { error } = await supabase.from('donors').insert([dbDonor]);
+  const { error } = await supabaseClient.from('donors').insert([dbDonor]);
   if(error) {
     console.error("Error registering donor:", error);
     alert("There was an error completing your registration.");
