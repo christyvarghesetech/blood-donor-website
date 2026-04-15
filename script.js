@@ -3,7 +3,7 @@ let regionData = {};
 
 // Initialize Supabase Client
 const SUPABASE_URL = "https://btbomnsmjzqcthdogmtp.supabase.co";
-const SUPABASE_ANON_KEY = "YOUR_ANON_KEY_HERE"; // IMPORTANT: Replace this with your actual Anon Key!
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Ym9tbnNtanpxY3RoZG9nbXRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyNjA0NzksImV4cCI6MjA5MTgzNjQ3OX0.Mf2R8F_IbOqP-cDhlKOrra_JzHlBUgjYHHdCd8t4gac";
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Active Donors State
