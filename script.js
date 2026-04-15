@@ -1,20 +1,5 @@
-// Regional Mock Data (Kerala)
-const regionData = {
-  "Alappuzha": ["Alappuzha", "Ambalappuzha", "Chengannur", "Cherthala", "Haripad", "Kayamkulam", "Mavelikkara", "Kuttanad", "Aroor"],
-  "Ernakulam": ["Kochi", "Aluva", "Kakkanad", "Edappally", "Angamaly", "Perumbavoor", "Muvattupuzha", "Kothamangalam", "Paravur", "Kalamassery", "Tripunithura"],
-  "Idukki": ["Munnar", "Thodupuzha", "Adimali", "Peermade", "Kattappana", "Nedumkandam", "Idukki Township", "Vandiperiyar"],
-  "Kannur": ["Kannur", "Thalassery", "Taliparamba", "Mattannur", "Payyanur", "Iritty", "Koothuparamba", "Panoor", "Anthoor"],
-  "Kasaragod": ["Kasaragod", "Kanhangad", "Manjeshwar", "Nileshwaram", "Trikaripur", "Cheruvathur", "Uppala", "Kumbla"],
-  "Kollam": ["Kollam", "Punalur", "Karunagappally", "Kottarakkara", "Paravur", "Pathanapuram", "Sasthamkotta", "Kundara", "Chathannoor"],
-  "Kottayam": ["Kottayam", "Pala", "Changanassery", "Vaikom", "Kanjirappally", "Ettumanoor", "Pampady", "Erattupetta"],
-  "Kozhikode": ["Kozhikode", "Vadakara", "Koyilandy", "Ramanattukara", "Feroke", "Balussery", "Mukkom", "Koduvally", "Perambra"],
-  "Malappuram": ["Malappuram", "Tirur", "Ponnani", "Manjeri", "Perinthalmanna", "Kottakkal", "Nilambur", "Kondotty", "Edappal"],
-  "Palakkad": ["Palakkad", "Ottapalam", "Shoranur", "Chittur", "Pattambi", "Mannarkkad", "Alathur", "Cherpulassery", "Vadakkencherry"],
-  "Pathanamthitta": ["Pathanamthitta", "Adoor", "Thiruvalla", "Konni", "Ranni", "Mallappally", "Kozhencherry", "Pandalam"],
-  "Thiruvananthapuram": ["Thiruvananthapuram", "Neyyattinkara", "Varkala", "Attingal", "Kazhakkoottam", "Nedumangad", "Kattakkada", "Kilimanoor"],
-  "Thrissur": ["Thrissur", "Chalakudy", "Guruvayur", "Kodungallur", "Kunnamkulam", "Irinjalakuda", "Wadakkanchery", "Pudukkad", "Chavakkad"],
-  "Wayanad": ["Kalpetta", "Mananthavady", "Sulthan Bathery", "Vythiri", "Meenangadi", "Panamaram", "Pulpally"]
-};
+// Regional Data (Fetched from Supabase)
+let regionData = {};
 
 // Initialize Supabase Client
 const SUPABASE_URL = "https://btbomnsmjzqcthdogmtp.supabase.co";
@@ -23,6 +8,20 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Active Donors State
 let donorsData = [];
+
+// Fetch Regions from Database
+async function fetchRegions() {
+  const { data, error } = await supabase.from('regions').select('*');
+  if (error) {
+    console.error("Error fetching regions:", error);
+    return;
+  }
+  
+  regionData = {};
+  data.forEach(row => {
+    regionData[row.district] = Array.isArray(row.cities) ? row.cities : [];
+  });
+}
 
 // Fetch Donors from Database
 async function fetchDonors() {
@@ -151,11 +150,12 @@ searchForm.addEventListener("submit", function(e) {
 // Initialize on Load
 window.addEventListener("DOMContentLoaded", async () => {
   // Fetch from Supabase
-  await fetchDonors();
+  await Promise.all([fetchRegions(), fetchDonors()]);
   initDropdowns();
   
   // Need to render if admin logged in and relies on async data
   if (sessionStorage.getItem("adminLoggedIn") === "true") {
+    initAdminDropdowns();
     renderAdminDonors();
   }
 });
@@ -186,8 +186,6 @@ const addSuccessMsg = document.getElementById("add-success-msg");
 if (sessionStorage.getItem("adminLoggedIn") === "true") {
   adminLoginBtn.classList.add("hidden");
   adminDashboard.classList.remove("hidden");
-  initAdminDropdowns();
-  renderAdminDonors();
 }
 
 // Open Modal
