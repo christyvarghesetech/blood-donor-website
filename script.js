@@ -313,7 +313,6 @@ function renderAdminDonors() {
   donorsData.forEach(donor => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>#${donor.id}</td>
       <td><strong>${donor.name}</strong></td>
       <td><span class="blood-badge" style="font-size:12px; padding:4px 8px;">${donor.bloodType}</span></td>
       <td>${donor.city}, ${donor.district}</td>
