@@ -32,7 +32,6 @@ async function fetchDonors() {
   }
   // Map Supabase snake_case to app's camelCase structure
   donorsData = data.map(d => ({
-    id: d.id,
     name: d.name,
     district: d.district,
     city: d.city,
